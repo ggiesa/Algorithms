@@ -1,4 +1,7 @@
 from nose.tools import assert_equal
+from copy import copy
+from collections import defaultdict
+from time import time
 
 def anagram_problem():
     '''
@@ -143,3 +146,155 @@ def pair_sum_problem():
     t = TestPair()
     t.test(pair_sum1)
     t.test(pair_sum2)
+
+
+
+
+def find_mising_element():
+    '''
+    Consider an array of non-negative integers. A second array is formed by
+    shuffling the elements of the first array and deleting a random element.
+    Given these two arrays, find which element is missing in the second array.
+
+    Example:
+
+        The first array is shuffled and the number 5 is
+    removed to construct the second array.
+
+    Input:
+
+    finder([1,2,3,4,5,6,7],[3,7,2,1,4,6])
+
+    Output:
+
+    5 is the missing number
+    '''
+
+    def solution1(array1, array2):
+        # Brute force, O(n^2)
+
+        result = copy(array1)
+        for element in array1:
+            if element in array2:
+                result.remove(element)
+                array2.remove(element)
+        return result[0]
+
+
+    def solution2(array1, array2):
+        # O(nlog(n))
+
+        array1.sort()
+        array2.sort()
+
+        for i, el in enumerate(array1):
+            if array2[i] != array1[i]:
+                return el
+
+
+    def solution3(array1, array2):
+        # O(n)
+
+        d = defaultdict(int)
+
+        for num in array2:
+            d[num] += 1
+
+        for num in array1:
+            d[num] -= 1
+            if d[num] < 0:
+                return num
+
+
+    def solution4(array1, array2):
+        # O(n), constant space complexity
+        result = 0
+        for num in array1+array2:
+            result ^= num
+        return result
+
+
+    class TestFinder(object):
+
+        def test(self,sol):
+            assert_equal(sol([5,5,7,7],[5,7,7]),5)
+            assert_equal(sol([1,2,3,4,5,6,7],[3,7,2,1,4,6]),5)
+            assert_equal(sol([9,8,7,6,5,4,3,2,1],[9,8,7,5,4,3,2,1]),6)
+            print('ALL TEST CASES PASSED')
+
+    # Run test
+    t = TestFinder()
+    t.test(solution1)
+    t.test(solution2)
+    t.test(solution3)
+    t.test(solution4)
+
+
+
+def largest_continuous_sum():
+    '''
+    Given an array of integers (positive and negative), find the
+    largest continuous sum.
+    '''
+
+    def solution1(array):
+        # O(n)
+
+        if len(array) == 0:
+            return 0
+
+        maximum = minimum = array[0]
+        for num in array:
+            if num > maximum:
+                maximum = num
+            if num < minimum:
+                minimum = num
+
+        if maximum <= 0:
+            return maximum
+        elif minimum >= 0:
+            return sum(array)
+
+
+        for i, _ in enumerate(array):
+            a = sum(array[i:])
+            b = sum(array[:i])
+            if a > maximum:
+                maximum = a
+            if b > maximum:
+                maximum = b
+
+        return maximum
+
+
+    def solution2(array):
+        # O(n)
+
+        if len(array) == 0:
+            return 0
+
+        max_sum = current_sum = array[0]
+        for num in array[1:]:
+            current_sum = max(current_sum + num, num)
+            max_sum = max(current_sum, max_sum)
+        return max_sum
+
+
+    class LargeContTest(object):
+        def test(self,sol):
+            assert_equal(sol([1,2,-1,3,4,-1]),9)
+            assert_equal(sol([1,2,-1,3,4,10,10,-10,-1]),29)
+            assert_equal(sol([-1,1]),1)
+            assert_equal(sol([-10,-10,-10,1,2,3,4,5]), 15)
+            assert_equal(sol([]),0)
+            assert_equal(sol([1,2,3,4,5]), sum([1,2,3,4,5]))
+            assert_equal(sol([-1,-2,-4]), -1)
+            assert_equal(sol([1]), 1)
+            assert_equal(sol([0]), 0)
+
+            print('ALL TEST CASES PASSED')
+
+    #Run Test
+    t = LargeContTest()
+    t.test(solution1)
+    t.test(solution2)
