@@ -91,19 +91,16 @@ def list_reversal_prob():
             self.next_node = None
 
     def solution1(head):
-        # O(n) time, O(1) space
 
         current = head
         previous = None
-        next_node = None
+        next = None
 
         while current:
-            next_node = current.next_node
+            next = current.next_node
             current.next_node = previous
             previous = current
-            current = next_node
-
-
+            current = next
 
     def test_reversal(sol):
 
@@ -139,3 +136,69 @@ def list_reversal_prob():
         print('Test case passed')
 
     test_reversal(solution1)
+
+
+
+def nth_to_last_prob():
+    '''
+    Write a function that takes a head node and an integer value n and then
+    returns the nth to last node in the linked list.
+    '''
+
+    class Node:
+        def __init__(self, value):
+            self.value = value
+            self.next_node = None
+
+    def solution1(n, head):
+        # O(2n)
+
+        length = 1
+        node = head
+        while node.next_node is not None:
+            node = node.next_node
+            length += 1
+
+        node = head
+        for i in range(length-n):
+            node = node.next_node
+
+        return node
+
+    def solution2(n, head):
+        # O(n)
+
+        left_node = right_node = head
+
+        for i in range(n-1):
+            if right_node.next_node is not None:
+                right_node = right_node.next_node
+            else:
+                raise ValueError('There are fewer than n nodes in the list')
+
+        while right_node.next_node is not None:
+            left_node = left_node.next_node
+            right_node = right_node.next_node
+
+        return left_node
+
+
+    def test_nth_to_last(sol):
+
+        a = Node(1)
+        b = Node(2)
+        c = Node(3)
+        d = Node(4)
+        e = Node(5)
+
+        a.next_node = b
+        b.next_node = c
+        c.next_node = d
+        d.next_node = e
+
+        assert_equal(sol(2,a), d)
+        print('Test case passed')
+
+    # Run test
+    test_nth_to_last(solution1)
+    test_nth_to_last(solution2)
