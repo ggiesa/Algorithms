@@ -1,3 +1,5 @@
+'''Recursion and memoization examples.'''
+
 from time import time
 
 # Cache
