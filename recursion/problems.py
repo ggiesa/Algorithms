@@ -174,6 +174,7 @@ def fibonnaci_prob():
 
         return ret[-1]
 
+
     def fib_r(n):
         '''Solved recursively.'''
         if n <= 1:
@@ -187,16 +188,12 @@ def fibonnaci_prob():
     class Memoize:
         def __init__(self, f):
             self.f = f
-
-
-
-
-
             self.cache = {}
         def __call__(self, *args):
             if args not in self.cache:
                 self.cache[args] = self.f(*args)
             return self.cache[args]
+
 
     @Memoize
     def fib_m(n):
